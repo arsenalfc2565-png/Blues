@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Fallback so a hard refresh / shared link never 404s (app is a single-page app)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

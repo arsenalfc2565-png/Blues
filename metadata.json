@@ -1,0 +1,6 @@
+{
+  "name": "Blues Collection - Kisumu Footwear Wholesale & 3D Marketplace",
+  "description": "Premier B2B Footwear Wholesale Distributor in Kisumu, Kenya featuring bulk carton matrix ordering, reseller margin simulator, 3D footwear visualizer, Lipa Pole Pole, M-Pesa STK, and offline resilience.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

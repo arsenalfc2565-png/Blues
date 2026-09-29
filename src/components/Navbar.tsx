@@ -279,7 +279,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="group/logo relative w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl overflow-hidden ring-1.5 sm:ring-2 ring-blue-600/40 shadow-xs hover:scale-105 transition-all bg-neutral-950 flex items-center justify-center shrink-0 cursor-pointer focus:outline-none"
           >
             <img
-              src="/src/assets/images/blues_brand_logo_1790333662232.jpg"
+              src="/blues_brand_logo_1790333662232.jpg"
               alt="Blues Collection Logo"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover transition-transform duration-300 group-hover/logo:scale-110"

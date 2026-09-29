@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings, onNavigate }) => 
                 className="group relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-blue-500/40 hover:ring-blue-500 shadow-md bg-neutral-900 flex items-center justify-center shrink-0 cursor-pointer focus:outline-none"
               >
                 <img
-                  src="/src/assets/images/blues_brand_logo_1790333662232.jpg"
+                  src="/blues_brand_logo_1790333662232.jpg"
                   alt="Blues Collection Logo"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"

@@ -57,7 +57,7 @@ export const MpesaStatementModal: React.FC<MpesaStatementModalProps> = ({
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl overflow-hidden ring-1 ring-neutral-300 shadow-xs bg-neutral-900 flex items-center justify-center shrink-0">
                   <img
-                    src="/src/assets/images/blues_brand_logo_1790333662232.jpg"
+                    src="/blues_brand_logo_1790333662232.jpg"
                     alt="Blues Collection Logo"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"

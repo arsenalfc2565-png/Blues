@@ -259,7 +259,7 @@ export const WhatsAppCatalogPdfModal: React.FC<WhatsAppCatalogPdfModalProps> = (
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-white p-2 border border-neutral-700 flex items-center justify-center shrink-0">
                 <img
-                  src="/src/assets/images/blues_brand_logo_1790333662232.jpg"
+                  src="/blues_brand_logo_1790333662232.jpg"
                   alt="Blues Collection Logo"
                   className="w-full h-full object-contain"
                 />

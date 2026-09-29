@@ -33,13 +33,14 @@ import { Product, CartItem, Order, StoreSettings, ProductReview, StarterPack, In
 import { validateCartSizing } from './utils/sizingValidator';
 import { isDeviceOnline, getOfflineDrafts, clearAllOfflineDrafts } from './utils/offlineStorage';
 import { Z_INDEX } from './constants/zIndex';
+import { useFirebaseState } from './utils/useFirebaseState';
 import { Wifi, RefreshCw, X, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function App() {
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
-  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
-  const [storeSettings, setStoreSettings] = useState<StoreSettings>(INITIAL_STORE_SETTINGS);
+  const [products, setProducts] = useFirebaseState<Product[]>('products', INITIAL_PRODUCTS);
+  const [orders, setOrders] = useFirebaseState<Order[]>('orders', INITIAL_ORDERS);
+  const [storeSettings, setStoreSettings] = useFirebaseState<StoreSettings>('storeSettings', INITIAL_STORE_SETTINGS);
 
   // Cart state - seed with an unbalanced pair to showcase pairing alert
   const [cartItems, setCartItems] = useState<CartItem[]>([

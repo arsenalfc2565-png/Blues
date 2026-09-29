@@ -561,7 +561,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               className="group/logo relative w-11 h-11 rounded-2xl overflow-hidden ring-2 ring-blue-500/50 shadow-md shadow-blue-600/30 bg-neutral-950 flex items-center justify-center shrink-0 cursor-pointer hover:scale-105 transition-all"
             >
               <img
-                src="/src/assets/images/blues_brand_logo_1790333662232.jpg"
+                src="/blues_brand_logo_1790333662232.jpg"
                 alt="Blues Collection Logo"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover/logo:scale-110"

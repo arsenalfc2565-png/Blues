@@ -28,6 +28,7 @@ import { Product, CartItem, ProductReview } from '../types';
 import { BulkCartonMatrixModal } from './BulkCartonMatrixModal';
 import { MultiSizeSelectorModal } from './MultiSizeSelectorModal';
 import { ProductReviewsModal } from './ProductReviewsModal';
+import { ProductImageLightboxModal } from './ProductImageLightboxModal';
 import { StoreSettings } from '../types';
 
 interface ProductCatalogProps {
@@ -327,6 +328,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   const [multiSizeProduct, setMultiSizeProduct] = useState<Product | null>(null);
   const [multiSizeInitialSize, setMultiSizeInitialSize] = useState<number | string | undefined>(undefined);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; title: string } | null>(null);
 
   const categories = [
     { id: 'all', label: 'All Footwear' },
@@ -740,11 +742,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   className="group bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-all duration-300 flex flex-col"
                 >
                   {/* Image Frame */}
-                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
+                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden"
                     <img
                       src={product.imageUrl}
                       alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onClick={() => setLightboxImage({ src: product.imageUrl, title: product.title })}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
                     />
 
                     {/* Sizing Rule Pill Banner */}
@@ -1028,6 +1031,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
             if (onAddReview) {
               onAddReview(productId, newReviewData);
             }
+            {/* ========================================================= */}
+      {/* 4. PRODUCT PHOTO LIGHTBOX (TAP TO ENLARGE)                */}
+      {/* ========================================================= */}
+      <ProductImageLightboxModal
+        isOpen={!!lightboxImage}
+        onClose={() => setLightboxImage(null)}
+        imageSrc={lightboxImage?.src}
+        title={lightboxImage?.title}
+      />
             // Update local modal state immediately
             const createdReview: ProductReview = {
               id: `rev-${Date.now()}`,

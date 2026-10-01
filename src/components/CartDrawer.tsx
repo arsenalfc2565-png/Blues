@@ -701,7 +701,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       className="text-blue-600 focus:ring-blue-500"
                     />
                     <div className="flex-1">
-                      <span className="font-bold text-neutral-900 block">Safaricom M-Pesa STK Push (100% Full Payment)</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-neutral-900 block">Safaricom M-Pesa STK Push (100% Full Payment)</span>
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold text-[9px] uppercase tracking-wide">
+                          Lipa Na M-Pesa
+                        </span>
+                      </div>
                       <span className="text-neutral-500">Instant prompt sent to your Safaricom phone SIM for immediate clearance.</span>
                     </div>
                   </label>
@@ -740,8 +745,38 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       className="text-blue-600 focus:ring-blue-500"
                     />
                     <div className="flex-1">
-                      <span className="font-bold text-neutral-900 block">Buy Goods Till Number: <strong>{storeSettings.mpesaTill}</strong></span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-neutral-900 block">Buy Goods Till Number: <strong>{storeSettings.mpesaTill}</strong></span>
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold text-[9px] uppercase tracking-wide">
+                          Lipa Na M-Pesa
+                        </span>
+                      </div>
                       <span className="text-neutral-500">Pay directly from Safaricom Sim Toolkit menu to Blues Collection Till.</span>
+                    </div>
+                  </label>
+
+                  {/* Option 4: Paybill */}
+                  <label className="flex items-center gap-3 p-3 rounded-2xl border border-neutral-200 cursor-pointer hover:bg-neutral-50 transition-colors">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="mpesa_paybill"
+                      checked={paymentMethod === 'mpesa_paybill'}
+                      onChange={() => setPaymentMethod('mpesa_paybill')}
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-neutral-900 block">Pay via Paybill</span>
+                        <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold text-[9px] uppercase tracking-wide">
+                          Lipa Na M-Pesa
+                        </span>
+                      </div>
+                      <span className="text-neutral-500 block">
+                        Paybill: <strong className="text-neutral-900 font-mono">{storeSettings.mpesaPaybill}</strong>
+                        {'  '}&middot;{'  '}
+                        Account Number: <strong className="text-neutral-900 font-mono">{storeSettings.mpesaPaybillAccountNumber}</strong>
+                      </span>
                     </div>
                   </label>
                 </div>

@@ -12,6 +12,7 @@ export const INITIAL_STORE_SETTINGS: StoreSettings = {
   whatsappNumber: '+254712345678',
   whatsappGroupUrl: 'https://chat.whatsapp.com/invite/BluesCollectionWholesaleVIP',
   mpesaPaybill: '522522',
+  mpesaPaybillAccountNumber: 'BLUES',
   mpesaTill: '839201',
   kraPin: 'P051892401Z',
   workingHours: 'Mon - Sat: 7:30 AM - 7:00 PM (EAT) · Direct Bus Loading & Parcels Dispatched at 4:00 PM Sharp',

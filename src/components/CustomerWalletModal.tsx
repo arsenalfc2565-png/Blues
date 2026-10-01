@@ -56,14 +56,11 @@ export const CustomerWalletModal: React.FC<CustomerWalletModalProps> = ({
 
     setIsProcessing(true);
     setTimeout(() => {
-      const receipt = `QGK${Math.floor(1000000 + Math.random() * 9000000)}`;
-      const updatedUser = topUpCustomerWallet(finalAmount, receipt);
-      onWalletUpdated(updatedUser);
       setIsProcessing(false);
-      setDepositSuccessNotice(`Successfully credited KSh ${finalAmount.toLocaleString()} to your Blues Account Wallet via ${receipt}!`);
-      setCustomAmount('');
-      setTimeout(() => setDepositSuccessNotice(null), 5000);
-    }, 1000);
+      setDepositError(
+        `Automatic M-Pesa top-up failed. This feature is coming soon and is not connected yet. Please pay manually via Paybill ${storeSettings.mpesaPaybill} (Account: ${storeSettings.mpesaPaybillAccountNumber}) or Till ${storeSettings.mpesaTill}, then contact admin to confirm your wallet top-up.`
+      );
+    }, 1500);
   };
 
   return createPortal(
@@ -246,7 +243,7 @@ export const CustomerWalletModal: React.FC<CustomerWalletModalProps> = ({
               {isProcessing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Crediting Account Wallet...</span>
+                  <span>Processing Payment...</span>
                 </>
               ) : (
                 <>

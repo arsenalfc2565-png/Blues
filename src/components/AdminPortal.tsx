@@ -2176,6 +2176,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                   className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white font-mono"
                 />
               </div>
+              <div>
+                <label className="text-neutral-400 block mb-1">
+                  Admin WhatsApp Chat Number (for "Chat with Admin" button)
+                </label>
+                <input
+                  type="text"
+                  value={settingsForm.whatsappNumber}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, whatsappNumber: e.target.value })}
+                  className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white font-mono"
+                  placeholder="+254712345678"
+                />
+              </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>

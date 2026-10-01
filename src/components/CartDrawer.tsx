@@ -137,6 +137,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleProcessMpesaSTK = () => {
     setCheckoutError(null);
+    if (!customer || customer.authProvider === 'guest') {
+      setCheckoutError('Please sign in or create a free account to place your order.');
+      if (onOpenGoogleLogin) onOpenGoogleLogin();
+      return;
+    }
     if (!customerPhone || customerPhone.length < 10) {
       setCheckoutError('Please enter a valid phone number (e.g. 0712345678)');
       return;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Sparkles, X, CheckCircle2, ArrowRight } from 'lucide-react';
+import { MessageSquare, MessageCircle, Users, Sparkles, X, CheckCircle2, ArrowRight } from 'lucide-react';
 import { StoreSettings } from '../types';
 import { Z_INDEX } from '../constants/zIndex';
 
@@ -9,6 +9,7 @@ interface WhatsAppCommunityHubProps {
 
 export const WhatsAppCommunityHub: React.FC<WhatsAppCommunityHubProps> = ({ storeSettings }) => {
   const [isWidgetDismissed, setIsWidgetDismissed] = useState(false);
+  const [isChatMenuOpen, setIsChatMenuOpen] = useState(false);
 
   return (
     <>
@@ -69,30 +70,60 @@ export const WhatsAppCommunityHub: React.FC<WhatsAppCommunityHubProps> = ({ stor
 
       {/* Floating Bottom-Right WhatsApp Quick Widget */}
       {!isWidgetDismissed && (
-        <div className={`fixed bottom-20 sm:bottom-6 right-4 sm:right-6 ${Z_INDEX.FLOATING_WIDGET} flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300 no-print`}>
-          <a
-            href={storeSettings.whatsappGroupUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl shadow-emerald-600/50 hover:shadow-emerald-500/70 transition-all hover:scale-105 active:scale-95 border border-emerald-400/40"
-            title="Join VIP Wholesale WhatsApp Group"
-          >
-            <div className="relative">
-              <MessageSquare className="w-5 h-5 text-white" />
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-white rounded-full animate-ping" />
+        <div className={`fixed bottom-20 sm:bottom-6 right-4 sm:right-6 ${Z_INDEX.FLOATING_WIDGET} flex flex-col items-end gap-2 no-print`}>
+          {isChatMenuOpen && (
+            <div className="w-64 rounded-2xl bg-neutral-900 border border-emerald-500/40 shadow-2xl p-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <a
+                href={`https://wa.me/${storeSettings.whatsappNumber.replace(/[^0-9]/g, '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-800 transition-colors"
+              >
+                <MessageCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+                <div className="text-left">
+                  <span className="text-xs font-bold text-white block">Chat with Admin</span>
+                  <span className="text-[10px] text-neutral-400 block">Direct reply on WhatsApp</span>
+                </div>
+              </a>
+              <a
+                href={storeSettings.whatsappGroupUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-800 transition-colors"
+              >
+                <Users className="w-5 h-5 text-emerald-400 shrink-0" />
+                <div className="text-left">
+                  <span className="text-xs font-bold text-white block">Join VIP WhatsApp Group</span>
+                  <span className="text-[10px] text-neutral-400 block">Daily Kisumu Arrivals</span>
+                </div>
+              </a>
             </div>
-            <div className="text-left hidden sm:block">
-              <span className="text-xs font-bold block leading-tight">Join VIP WhatsApp</span>
-              <span className="text-[10px] text-emerald-100 block">Daily Kisumu Arrivals</span>
-            </div>
-          </a>
-          <button
-            onClick={() => setIsWidgetDismissed(true)}
-            aria-label="Dismiss WhatsApp floating button"
-            className="w-7 h-7 rounded-full bg-neutral-900/80 hover:bg-neutral-900 text-neutral-400 hover:text-white flex items-center justify-center text-xs shadow-md border border-neutral-700"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+          )}
+
+          <div className="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <button
+              type="button"
+              onClick={() => setIsChatMenuOpen((prev) => !prev)}
+              className="flex items-center gap-3 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl shadow-emerald-600/50 hover:shadow-emerald-500/70 transition-all hover:scale-105 active:scale-95 border border-emerald-400/40 cursor-pointer"
+              title="Chat with us on WhatsApp"
+            >
+              <div className="relative">
+                <MessageCircle className="w-5 h-5 text-white" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-white rounded-full animate-ping" />
+              </div>
+              <div className="text-left hidden sm:block">
+                <span className="text-xs font-bold block leading-tight">Chat on WhatsApp</span>
+                <span className="text-[10px] text-emerald-100 block">Admin or VIP Group</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setIsWidgetDismissed(true)}
+              aria-label="Dismiss WhatsApp floating button"
+              className="w-7 h-7 rounded-full bg-neutral-900/80 hover:bg-neutral-900 text-neutral-400 hover:text-white flex items-center justify-center text-xs shadow-md border border-neutral-700"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       )}
     </>

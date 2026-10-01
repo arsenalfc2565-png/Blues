@@ -2177,7 +2177,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div>
                   <label className="text-neutral-400 block mb-1">Safaricom Till Number</label>
                   <input
@@ -2193,6 +2193,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     type="text"
                     value={settingsForm.mpesaPaybill}
                     onChange={(e) => setSettingsForm({ ...settingsForm, mpesaPaybill: e.target.value })}
+                    className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white font-mono font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="text-neutral-400 block mb-1">Paybill Account Number</label>
+                  <input
+                    type="text"
+                    value={settingsForm.mpesaPaybillAccountNumber}
+                    onChange={(e) => setSettingsForm({ ...settingsForm, mpesaPaybillAccountNumber: e.target.value })}
                     className="w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-xl text-white font-mono font-bold"
                   />
                 </div>

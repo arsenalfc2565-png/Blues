@@ -28,67 +28,17 @@ export interface CustomerUser {
 const STORAGE_KEY = 'blues_active_customer_profile';
 const ACCOUNTS_STORAGE_KEY = 'blues_registered_accounts_registry';
 
-// Default initial logged-in user pre-configured with active wallet
-const DEFAULT_CUSTOMER: CustomerUser = {
-  id: 'usr-google-2565',
-  name: 'Brian Otieno',
-  email: 'seapower2565@gmail.com',
-  phone: '0722894210',
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-  authProvider: 'google',
-  walletBalance: 32500, // Preloaded balance so they can test instant wallet checkout right away!
-  savedDeliveryTown: 'Eldoret',
-  savedDeliveryStage: 'Zion Mall Stage (Guardian Angel)',
-  businessName: 'Otieno Premium Footwear Eldoret',
-  password: 'password123',
-  createdAt: '2026-01-15T08:00:00.000Z',
-  walletTransactions: [
-    {
-      id: 'tx-init-1',
-      type: 'topup',
-      amount: 40000,
-      description: 'M-Pesa Till Deposit via 0722894210',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
-      reference: 'QGK7824190',
-    },
-    {
-      id: 'tx-init-2',
-      type: 'order_payment',
-      amount: 7500,
-      description: 'Order Payment for BC-2026-8942 (Milan Loafers)',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(),
-      reference: 'ORD-BC-8942',
-    },
-  ],
-};
+const createGuestCustomer = (): CustomerUser => ({
+  id: `usr-guest-${Date.now()}`,
+  name: 'Guest',
+  email: '',
+  phone: '',
+  authProvider: 'guest',
+  walletBalance: 0,
+  walletTransactions: [],
+});
 
-const SEED_ACCOUNTS: CustomerUser[] = [
-  DEFAULT_CUSTOMER,
-  {
-    id: 'usr-direct-101',
-    name: 'Grace Wanjiku',
-    email: 'wanjiku.footwear@gmail.com',
-    phone: '0711456789',
-    avatarUrl: '',
-    authProvider: 'direct',
-    walletBalance: 15000,
-    savedDeliveryTown: 'Nakuru',
-    savedDeliveryStage: 'Gate House Stage (EasyCoach)',
-    businessName: 'Wanjiku Classic Shoes Nakuru',
-    password: 'password123',
-    createdAt: '2026-02-10T10:30:00.000Z',
-    walletTransactions: [
-      {
-        id: 'tx-init-wanjiku-1',
-        type: 'topup',
-        amount: 15000,
-        description: 'M-Pesa Till Deposit via 0711456789',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-        reference: 'QHL9941201',
-      }
-    ]
-  }
-];
+const SEED_ACCOUNTS: CustomerUser[] = [];
 
 export const getRegisteredAccounts = (): CustomerUser[] => {
   try {
@@ -125,7 +75,7 @@ export const getCurrentCustomer = (): CustomerUser => {
   } catch (e) {
     console.warn('Failed to parse customer profile', e);
   }
-  return DEFAULT_CUSTOMER;
+  return createGuestCustomer();
 };
 
 export const saveCurrentCustomer = (user: CustomerUser): void => {
@@ -178,7 +128,7 @@ export const registerDirectAccount = (params: {
   }
 
   const newAccountId = `usr-direct-${Date.now()}`;
-  const initialWalletBonus = 5000; // Welcome promotional credit to test checkout
+  const initialWalletBonus = 0;
 
   const newUser: CustomerUser = {
     id: newAccountId,
@@ -192,16 +142,7 @@ export const registerDirectAccount = (params: {
     businessName,
     password,
     createdAt: new Date().toISOString(),
-    walletTransactions: [
-      {
-        id: `tx-welcome-${Date.now()}`,
-        type: 'topup',
-        amount: initialWalletBonus,
-        description: 'Blues Wholesale New Reseller Welcome Credit',
-        timestamp: new Date().toISOString(),
-        reference: `WELCOME-${Math.floor(1000 + Math.random() * 9000)}`,
-      },
-    ],
+    walletTransactions: [],
   };
 
   const updatedRegistry = [newUser, ...existingAccounts];
@@ -249,30 +190,32 @@ export const loginWithDirectAccount = (
  * Fast Google OAuth Sign In
  */
 export const loginWithGoogleAccount = (
-  email: string = 'seapower2565@gmail.com',
-  name: string = 'Brian Otieno',
+  email: string,
+  name: string,
   avatarUrl?: string
 ): CustomerUser => {
-  const existing = getCurrentCustomer();
-  const updatedUser: CustomerUser = {
-    ...existing,
+  const cleanEmail = email.trim().toLowerCase();
+  const accounts = getRegisteredAccounts();
+  const existing = accounts.find((a) => a.email && a.email.toLowerCase() === cleanEmail);
+  if (existing) {
+    const restored = avatarUrl ? { ...existing, avatarUrl } : existing;
+    saveCurrentCustomer(restored);
+    return restored;
+  }
+  const newUser: CustomerUser = {
     id: `usr-google-${Date.now()}`,
     name,
-    email,
-    avatarUrl:
-      avatarUrl ||
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    email: cleanEmail,
+    phone: '',
+    avatarUrl: avatarUrl || '',
     authProvider: 'google',
+    walletBalance: 0,
+    createdAt: new Date().toISOString(),
+    walletTransactions: [],
   };
-
-  // Also add to registry if not present
-  const accounts = getRegisteredAccounts();
-  if (!accounts.some((a) => a.email.toLowerCase() === email.toLowerCase())) {
-    saveRegisteredAccounts([updatedUser, ...accounts]);
-  }
-
-  saveCurrentCustomer(updatedUser);
-  return updatedUser;
+  saveRegisteredAccounts([newUser, ...accounts]);
+  saveCurrentCustomer(newUser);
+  return newUser;
 };
 
 export const logoutCustomerAccount = (): void => {

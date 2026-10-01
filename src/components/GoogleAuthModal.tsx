@@ -267,7 +267,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                   <span>
-                    <strong>Direct Sign Up:</strong> Instant account creation without Google. Includes <strong>KSh 5,000</strong> preloaded welcome wallet balance!
+                    <strong>Direct Sign Up:</strong> Instant, free account creation without Google.
                   </span>
                 </div>
               </div>

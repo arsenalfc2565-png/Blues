@@ -154,6 +154,10 @@ export const Footer: React.FC<FooterProps> = ({ storeSettings, onNavigate }) => 
                 <span>Paybill:</span>
                 <span className="font-mono font-black text-emerald-400">{storeSettings.mpesaPaybill}</span>
               </div>
+              <div className="flex items-center justify-between text-neutral-300">
+                <span>Account Number:</span>
+                <span className="font-mono font-black text-emerald-400">{storeSettings.mpesaPaybillAccountNumber}</span>
+              </div>
               <div className="flex items-center justify-between text-neutral-400 text-[10px]">
                 <span>KRA PIN:</span>
                 <span className="font-mono text-neutral-200">{storeSettings.kraPin}</span>

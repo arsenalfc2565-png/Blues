@@ -61,8 +61,8 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   const [loginPassword, setLoginPassword] = useState('');
 
   // Google flow fields
-  const [googleEmail, setGoogleEmail] = useState('seapower2565@gmail.com');
-  const [googleName, setGoogleName] = useState('Brian Otieno');
+  const [googleEmail, setGoogleEmail] = useState('');
+  const [googleName, setGoogleName] = useState('');
   const [isCustomGoogle, setIsCustomGoogle] = useState(false);
 
   // UI state

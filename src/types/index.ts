@@ -182,6 +182,7 @@ export interface StoreSettings {
   whatsappNumber: string;
   whatsappGroupUrl: string;
   mpesaPaybill: string;
+  mpesaPaybillAccountNumber: string;
   mpesaTill: string;
   kraPin: string;
   workingHours: string;

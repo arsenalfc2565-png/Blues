@@ -69,7 +69,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   );
 
   // M-Pesa STK simulation state
-  const [stkStatus, setStkStatus] = useState<'idle' | 'sending' | 'awaiting_pin' | 'confirmed'>('idle');
+  const [stkStatus, setStkStatus] = useState<'idle' | 'sending' | 'awaiting_pin' | 'confirmed' | 'failed'>('idle');
   const [mpesaReceipt, setMpesaReceipt] = useState('');
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [isStatementModalOpen, setIsStatementModalOpen] = useState(false);
@@ -253,72 +253,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     // Step 1: Simulate STK Push Sent
     setTimeout(() => {
       setStkStatus('awaiting_pin');
-      // Step 2: Simulate User entering PIN on phone
+      // Step 2: Simulate User entering PIN on phone (no real Safaricom Daraja integration yet)
       setTimeout(() => {
-        const randomCode = 'TK' + Math.floor(10000000 + Math.random() * 90000000).toString(36).toUpperCase();
-        setMpesaReceipt(randomCode);
-        setStkStatus('confirmed');
-
-        // Calculate Landed Cost and Gross Profit
-        let orderTotalCost = 0;
-        const processedItems = cartItems.map((item) => {
-          const unitBuying = item.product.buyingPrice || Math.round(item.unitPrice * 0.6);
-          const lineCost = unitBuying * item.quantity;
-          const lineRevenue = item.unitPrice * item.quantity;
-          orderTotalCost += lineCost;
-
-          return {
-            productId: item.productId,
-            productTitle: item.product.title,
-            size: item.size,
-            color: item.color,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: lineRevenue,
-            unitBuyingPrice: unitBuying,
-            totalCost: lineCost,
-            itemProfit: lineRevenue - lineCost,
-          };
-        });
-
-        const orderNetProfit = summary.finalTotal - orderTotalCost;
-        const profitMarginPct = summary.finalTotal > 0 ? Math.round((orderNetProfit / summary.finalTotal) * 1000) / 10 : 0;
-
-        // Create completed order
-        const isLipa = paymentMethod === 'lipa_pole_pole';
-        const newOrder: Order = {
-          id: `ord-${Date.now()}`,
-          orderNumber: `BC-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-          customerName: customerName || 'Valued Reseller',
-          customerPhone,
-          deliveryTown,
-          deliveryType,
-          courier,
-          items: processedItems,
-          subtotal: summary.subtotal,
-          wholesaleSavings: summary.wholesaleSavings,
-          totalAmount: summary.finalTotal,
-          totalCost: orderTotalCost,
-          netProfit: orderNetProfit,
-          profitMarginPct,
-          depositAmount: isLipa ? summary.depositAmount : undefined,
-          balanceDue: isLipa ? summary.balanceDue : undefined,
-          paymentMethod,
-          paymentStatus: isLipa ? 'deposit_paid' : 'paid',
-          mpesaReceipt: randomCode,
-          kraEtimSerial: `ETIMS-KE-2026-${Math.floor(10000 + Math.random() * 90000)}`,
-          status: 'verified',
-          waybillNumber: `${courier.substring(0, 2).toUpperCase()}-${deliveryTown.substring(0, 3).toUpperCase()}-${Math.floor(10000 + Math.random() * 90000)}`,
-          notes: isLipa
-            ? `Lipa Pole Pole (30% deposit of KSh ${summary.depositAmount.toLocaleString()} paid). Balance KSh ${summary.balanceDue.toLocaleString()} due on collection.`
-            : 'Automated M-Pesa STK push verification successful. Scheduled for packaging at Kisumu Bus Park depot.',
-          createdAt: new Date().toISOString(),
-          orderType: summary.isWholesaleOrder ? 'wholesale' : 'retail',
-        };
-
-        setCompletedOrder(newOrder);
-        onOrderCreated(newOrder);
-        setCheckoutStep('success');
+        setStkStatus('failed');
       }, 3500);
     }, 1500);
   };
@@ -783,49 +720,94 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
             </div>
           ) : checkoutStep === 'mpesa_prompt' ? (
-            /* ================= VIEW 3: LIVE M-PESA STK MODAL SIMULATION ================= */
-            <div className="py-6 space-y-6 text-center">
-              <div className="w-20 h-20 rounded-3xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center mx-auto text-emerald-700 shadow-md">
-                <CreditCard className="w-10 h-10 animate-bounce" />
-              </div>
-
-              <div>
-                <h3 className="font-display font-bold text-xl text-neutral-900">
-                  {stkStatus === 'sending'
-                    ? 'Connecting to Safaricom Daraja API...'
-                    : stkStatus === 'awaiting_pin'
-                    ? 'Enter M-Pesa PIN on Your Phone'
-                    : 'Payment Verified!'}
-                </h3>
-                <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
-                  STK Push prompt sent to <strong className="font-mono text-neutral-800">{customerPhone}</strong> for{' '}
-                  <strong className="text-neutral-900 font-bold font-mono">
-                    KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()}
-                  </strong>.
-                </p>
-              </div>
-
-              {/* Realistic Kenyan USSD Phone Pop-up Simulation */}
-              <div className="max-w-xs mx-auto p-4 rounded-3xl bg-neutral-900 text-white shadow-xl text-left border border-neutral-700 font-sans">
-                <div className="flex items-center justify-between border-b border-neutral-800 pb-2 mb-2">
-                  <span className="text-[11px] font-bold text-emerald-400">SAFARICOM M-PESA</span>
-                  <span className="text-[10px] text-neutral-400">Prompt</span>
+            stkStatus === 'failed' ? (
+              /* ================= VIEW 3B: AUTOMATIC PAYMENT FAILED - PAY MANUALLY ================= */
+              <div className="py-6 space-y-6 text-center">
+                <div className="w-20 h-20 rounded-3xl bg-red-100 border-2 border-red-300 flex items-center justify-center mx-auto text-red-600 shadow-md">
+                  <AlertTriangle className="w-10 h-10" />
                 </div>
-                <p className="text-xs text-neutral-200 leading-relaxed">
-                  Do you want to pay <strong>KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()}</strong> to{' '}
-                  <span className="text-emerald-400">BLUES COLLECTION KISUMU</span> Till {storeSettings.mpesaTill}?
-                </p>
-                <div className="mt-3 pt-2 border-t border-neutral-800 flex items-center justify-between text-[11px] text-neutral-400">
-                  <span>Enter PIN to confirm</span>
-                  <span className="font-mono text-emerald-400 animate-pulse">••••</span>
+
+                <div>
+                  <h3 className="font-display font-bold text-xl text-neutral-900">
+                    Automatic Payment Failed
+                  </h3>
+                  <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
+                    Automatic M-Pesa STK Push is coming soon and is not connected yet. Please pay manually using the details below, then our team will confirm your order.
+                  </p>
+                </div>
+
+                <div className="max-w-xs mx-auto p-4 rounded-3xl bg-neutral-50 border border-neutral-200 text-left space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Paybill Number:</span>
+                    <span className="font-bold font-mono text-neutral-900">{storeSettings.mpesaPaybill}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Account Number:</span>
+                    <span className="font-bold font-mono text-neutral-900">{storeSettings.mpesaPaybillAccountNumber}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Till Number:</span>
+                    <span className="font-bold font-mono text-neutral-900">{storeSettings.mpesaTill}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Amount:</span>
+                    <span className="font-bold font-mono text-neutral-900">
+                      KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setCheckoutStep('details')}
+                  className="px-6 py-3 rounded-2xl bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm transition-all active:scale-95"
+                >
+                  Back to Order Details
+                </button>
+              </div>
+            ) : (
+              /* ================= VIEW 3A: LIVE M-PESA STK MODAL SIMULATION ================= */
+              <div className="py-6 space-y-6 text-center">
+                <div className="w-20 h-20 rounded-3xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center mx-auto text-emerald-700 shadow-md">
+                  <CreditCard className="w-10 h-10 animate-bounce" />
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold text-xl text-neutral-900">
+                    {stkStatus === 'sending'
+                      ? 'Connecting to Safaricom Daraja API...'
+                      : 'Enter M-Pesa PIN on Your Phone'}
+                  </h3>
+                  <p className="text-xs text-neutral-500 mt-1 max-w-xs mx-auto">
+                    STK Push prompt sent to <strong className="font-mono text-neutral-800">{customerPhone}</strong> for{' '}
+                    <strong className="text-neutral-900 font-bold font-mono">
+                      KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()}
+                    </strong>.
+                  </p>
+                </div>
+
+                {/* Realistic Kenyan USSD Phone Pop-up Simulation */}
+                <div className="max-w-xs mx-auto p-4 rounded-3xl bg-neutral-900 text-white shadow-xl text-left border border-neutral-700 font-sans">
+                  <div className="flex items-center justify-between border-b border-neutral-800 pb-2 mb-2">
+                    <span className="text-[11px] font-bold text-emerald-400">SAFARICOM M-PESA</span>
+                    <span className="text-[10px] text-neutral-400">Prompt</span>
+                  </div>
+                  <p className="text-xs text-neutral-200 leading-relaxed">
+                    Do you want to pay <strong>KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()}</strong> to{' '}
+                    <span className="text-emerald-400">BLUES COLLECTION KISUMU</span> Till {storeSettings.mpesaTill}?
+                  </p>
+                  <div className="mt-3 pt-2 border-t border-neutral-800 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span>Enter PIN to confirm</span>
+                    <span className="font-mono text-emerald-400 animate-pulse">••••</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center gap-2 text-xs text-neutral-500">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                  <span>Waiting for Safaricom Daraja callback verification...</span>
                 </div>
               </div>
-
-              <div className="flex items-center justify-center gap-2 text-xs text-neutral-500">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span>Waiting for Safaricom Daraja callback verification...</span>
-              </div>
-            </div>
+            )
           ) : (
             /* ================= VIEW 4: ORDER SUCCESS & RECEIPT ================= */
             <div className="py-6 space-y-6 text-center">

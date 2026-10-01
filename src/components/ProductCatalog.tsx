@@ -742,7 +742,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
                   className="group bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-neutral-300 transition-all duration-300 flex flex-col"
                 >
                   {/* Image Frame */}
-                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden"
+                  <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
                     <img
                       src={product.imageUrl}
                       alt={product.title}

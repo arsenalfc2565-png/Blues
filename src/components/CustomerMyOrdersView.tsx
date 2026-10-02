@@ -86,19 +86,9 @@ export const CustomerMyOrdersView: React.FC<CustomerMyOrdersViewProps> = ({
   // Filter orders for this customer (matches customer's phone or email or customerName, or all demo orders if logged in as Brian)
   const customerOrders = useMemo(() => {
     return orders.filter((order) => {
-      if (customer.email && customer.email === 'seapower2565@gmail.com') {
-        // Active reseller sees all demo + placed orders
-        return true;
-      }
       const phoneDigits = customer.phone.replace(/[^0-9]/g, '');
-      const orderPhoneDigits = order.customerPhone.replace(/[^0-9]/g, '');
-      if (phoneDigits && orderPhoneDigits.includes(phoneDigits.slice(-7))) {
-        return true;
-      }
-      if (customer.name && order.customerName.toLowerCase().includes(customer.name.toLowerCase().split(' ')[0])) {
-        return true;
-      }
-      return true; // Fallback to allow exploration
+      const orderPhoneDigits = (order.customerPhone || '').replace(/[^0-9]/g, '');
+      return phoneDigits.length >= 9 && orderPhoneDigits.slice(-9) === phoneDigits.slice(-9);
     });
   }, [orders, customer]);
 

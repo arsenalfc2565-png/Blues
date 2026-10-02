@@ -45,20 +45,23 @@ export default function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(
     () => sessionStorage.getItem('admin_authenticated') === 'true'
   );
+  
+// Cart state - starts empty and is remembered on this device
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('blues_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
-  // Cart state - seed with an unbalanced pair to showcase pairing alert
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 'seed-42',
-      productId: 'prod-ladies-01',
-      product: INITIAL_PRODUCTS[0],
-      size: 42,
-      color: 'Nude Beige',
-      quantity: 6,
-      unitPrice: 1550,
-    },
-  ]);
-
+  useEffect(() => {
+    try {
+      localStorage.setItem('blues_cart', JSON.stringify(cartItems));
+    } catch {}
+  }, [cartItems]);
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
     'catalog' | '3d-studio' | 'store' | 'pairing-guide' | 'track-order' | 'order-history' | 'my-orders' | 'admin'

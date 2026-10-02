@@ -141,7 +141,7 @@ export const EmailAuthModal: React.FC<EmailAuthModalProps> = ({
       setIsSubmitting(false);
 
       if (res.success && res.user) {
-        setSuccessMessage('🎉 Account registered successfully! KSh 5,000 welcome credit deposited to your wallet.');
+        setSuccessMessage('🎉 Account created successfully!');
         setTimeout(() => {
           onSuccess(res.user!);
           onClose();
@@ -329,7 +329,7 @@ export const EmailAuthModal: React.FC<EmailAuthModalProps> = ({
               <div className="bg-blue-50/80 dark:bg-blue-950/40 p-3 rounded-2xl border border-blue-200 dark:border-blue-800/60 flex items-center gap-2 text-blue-900 dark:text-blue-300 text-[11px]">
                 <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
                 <span>
-                  <strong>Standard Registration:</strong> No Google account needed. Instant wallet setup with <strong>KSh 5,000</strong> welcome testing credit!
+                  <strong>Standard Registration:</strong> No Google account needed. Free, instant account creation.
                 </span>
               </div>
 
@@ -519,8 +519,6 @@ export const EmailAuthModal: React.FC<EmailAuthModalProps> = ({
                     if (onSwitchToGoogle) {
                       onSwitchToGoogle();
                     } else {
-                      const user = loginWithGoogleAccount('seapower2565@gmail.com', 'Brian Otieno');
-                      onSuccess(user);
                       onClose();
                     }
                   }}
@@ -627,42 +625,7 @@ export const EmailAuthModal: React.FC<EmailAuthModalProps> = ({
                 </button>
               </form>
 
-              {/* Quick Demo Reseller Switcher */}
-              {registeredAccounts.length > 0 && (
-                <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 space-y-2">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 dark:text-neutral-400 block">
-                    Quick Sign-In (Demo Reseller Accounts):
-                  </span>
-                  <div className="space-y-1.5">
-                    {registeredAccounts.slice(0, 2).map((acc) => (
-                      <button
-                        key={acc.id}
-                        type="button"
-                        onClick={() => handleSelectDemoAccount(acc)}
-                        className="w-full p-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-blue-500 bg-neutral-50 dark:bg-neutral-800/60 hover:bg-blue-50/40 dark:hover:bg-blue-950/40 flex items-center justify-between transition-all cursor-pointer text-left"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                            {acc.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <strong className="text-neutral-900 dark:text-white text-xs block leading-tight">
-                              {acc.name}
-                            </strong>
-                            <span className="text-[10px] text-neutral-500 dark:text-neutral-400">
-                              {acc.email || acc.phone}
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                          KSh {acc.walletBalance.toLocaleString()}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
+             
               {/* Google OAuth Fallback / Switcher */}
               <div className="pt-2 text-center border-t border-neutral-200 dark:border-neutral-800 space-y-2">
                 <span className="text-[11px] text-neutral-500 block">Or use 1-click login:</span>
@@ -672,8 +635,6 @@ export const EmailAuthModal: React.FC<EmailAuthModalProps> = ({
                     if (onSwitchToGoogle) {
                       onSwitchToGoogle();
                     } else {
-                      const user = loginWithGoogleAccount('seapower2565@gmail.com', 'Brian Otieno');
-                      onSuccess(user);
                       onClose();
                     }
                   }}

@@ -98,6 +98,7 @@ export const registerDirectAccount = (params: {
   businessName?: string;
   deliveryTown?: string;
   deliveryStage?: string;
+  avatarUrl?: string;
 }): { success: boolean; user?: CustomerUser; error?: string } => {
   const name = params.name.trim();
   const phone = params.phone.trim().replace(/\s+/g, '');
@@ -136,6 +137,7 @@ export const registerDirectAccount = (params: {
     email: email || `${phone}@blueswholesale.co.ke`,
     phone,
     authProvider: 'direct',
+    avatarUrl: params.avatarUrl || '',
     walletBalance: initialWalletBonus,
     savedDeliveryTown: deliveryTown,
     savedDeliveryStage: deliveryStage,
@@ -327,3 +329,25 @@ export const refundCustomerWallet = (
 
   return updated;
 };
+
+export const fileToAvatarDataUrl = (file: File): Promise<string> =>
+  new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const size = 200;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const min = Math.min(img.width, img.height);
+        ctx?.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      };
+      img.onerror = () => resolve('');
+      img.src = reader.result as string;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });

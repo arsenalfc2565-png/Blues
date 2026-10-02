@@ -28,6 +28,7 @@ import {
   loginWithDirectAccount,
   getRegisteredAccounts,
   logoutCustomerAccount,
+    fileToAvatarDataUrl,
 } from '../utils/customerAuth';
 import { Z_INDEX } from '../constants/zIndex';
 
@@ -55,6 +56,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   const [regBusinessName, setRegBusinessName] = useState('');
   const [regDeliveryTown, setRegDeliveryTown] = useState('Eldoret');
   const [regDeliveryStage, setRegDeliveryStage] = useState('Main Bus Stage (Guardian Angel)');
+  const [regAvatar, setRegAvatar] = useState('');
 
   // Login form fields
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -63,7 +65,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
   // Google flow fields
   const [googleEmail, setGoogleEmail] = useState('');
   const [googleName, setGoogleName] = useState('');
-  const [isCustomGoogle, setIsCustomGoogle] = useState(false);
+  const [isCustomGoogle, setIsCustomGoogle] = useState(true);
 
   // UI state
   const [showPassword, setShowPassword] = useState(false);
@@ -96,10 +98,11 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
       businessName: regBusinessName,
       deliveryTown: regDeliveryTown,
       deliveryStage: regDeliveryStage,
+      avatarUrl: regAvatar,
     });
 
     if (res.success && res.user) {
-      setSuccessMessage('🎉 Reseller Account created successfully! KSh 5,000 welcome credit added.');
+      setSuccessMessage('🎉 Account created successfully!');
       setTimeout(() => {
         onSuccess(res.user!);
         onClose();
@@ -393,6 +396,23 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                 </div>
               </div>
 
+              <div>
+                <label className="font-bold text-neutral-700 dark:text-neutral-300 block mb-1">
+                  Profile Photo (optional)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    if (f) setRegAvatar(await fileToAvatarDataUrl(f));
+                  }}
+                  className="w-full text-xs text-neutral-600 dark:text-neutral-300"
+                />
+                {regAvatar && (
+                  <img src={regAvatar} alt="Preview" className="w-14 h-14 rounded-full object-cover mt-2 border border-neutral-300" />
+                )}
+              </div>
               {/* Submit Button */}
               <button
                 type="submit"
@@ -470,41 +490,6 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
                 </button>
               </form>
 
-              {/* Quick Select Saved Registered Reseller Accounts */}
-              {registeredAccounts.length > 0 && (
-                <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 space-y-2">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 dark:text-neutral-400 block">
-                    Quick Sign-In (1-Click Account Switcher):
-                  </span>
-                  <div className="space-y-1.5">
-                    {registeredAccounts.slice(0, 3).map((acc) => (
-                      <button
-                        key={acc.id}
-                        type="button"
-                        onClick={() => handleSelectPreloadedAccount(acc)}
-                        className="w-full p-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-blue-500 bg-neutral-50 dark:bg-neutral-800/60 hover:bg-blue-50/40 dark:hover:bg-blue-950/40 flex items-center justify-between transition-all cursor-pointer text-left"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                            {acc.name.charAt(0)}
-                          </div>
-                          <div>
-                            <strong className="text-neutral-900 dark:text-white text-xs block leading-tight">
-                              {acc.name}
-                            </strong>
-                            <span className="text-[10px] text-neutral-500 dark:text-neutral-400">
-                              {acc.phone} • {acc.savedDeliveryTown || 'Kenya'}
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                          KSh {acc.walletBalance.toLocaleString()}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
 
               <div className="text-center pt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
                 Don't have an account yet?{' '}
@@ -523,36 +508,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
           {/* TAB 3: FAST GOOGLE 1-CLICK AUTH                                           */}
           {/* ========================================================================= */}
           {authMode === 'google' && (
-            <div className="space-y-4">
-              {/* Active Google Account Card */}
-              <div className="p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                    alt="Google Avatar"
-                    className="w-10 h-10 rounded-full border border-blue-300 object-cover shrink-0"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold text-neutral-900 dark:text-white block leading-tight">
-                      Brian Otieno
-                    </strong>
-                    <span className="text-xs text-neutral-600 dark:text-neutral-400 font-mono">seapower2565@gmail.com</span>
-                  </div>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white font-bold text-[10px] uppercase">
-                  Google Verified
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleGoogleSignIn('seapower2565@gmail.com', 'Brian Otieno')}
-                className="w-full py-3 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-600/30 transition-all active:scale-95 cursor-pointer"
-              >
-                <span>Continue with Google as Brian Otieno</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
+            <div className="space-y-4"
               {/* Switch Account Option */}
               {!isCustomGoogle ? (
                 <button
@@ -591,6 +547,13 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
             </div>
           )}
 
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full py-2.5 px-4 rounded-2xl border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 font-bold text-xs hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+          >
+            Continue without an account
+          </button>
           {/* Account Benefits Footer Card */}
           <div className="p-3.5 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-800 space-y-2 text-[11px] text-neutral-600 dark:text-neutral-400">
             <span className="font-bold text-neutral-900 dark:text-white block text-xs">

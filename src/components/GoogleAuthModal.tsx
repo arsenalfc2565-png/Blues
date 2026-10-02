@@ -508,7 +508,7 @@ export const GoogleAuthModal: React.FC<GoogleAuthModalProps> = ({
           {/* TAB 3: FAST GOOGLE 1-CLICK AUTH                                           */}
           {/* ========================================================================= */}
           {authMode === 'google' && (
-            <div className="space-y-4"
+            <div className="space-y-4">
               {/* Switch Account Option */}
               {!isCustomGoogle ? (
                 <button

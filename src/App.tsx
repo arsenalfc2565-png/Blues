@@ -77,6 +77,14 @@ export default function App() {
     window.addEventListener('blues_customer_auth_changed', handleAuthChange);
     return () => window.removeEventListener('blues_customer_auth_changed', handleAuthChange);
   }, []);
+  useEffect(() => {
+    try {
+      if (customer.authProvider === 'guest' && !localStorage.getItem('blues_welcome_seen')) {
+        localStorage.setItem('blues_welcome_seen', '1');
+        setIsGoogleAuthModalOpen(true);
+      }
+    } catch {}
+  }, []);
 
   // Hero Quick Matrix Simulator Modal state
   const [isHeroMatrixOpen, setIsHeroMatrixOpen] = useState(false);

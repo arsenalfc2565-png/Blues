@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Trash2,
@@ -75,6 +75,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [isStatementModalOpen, setIsStatementModalOpen] = useState(false);
   const [offlineSavedNotice, setOfflineSavedNotice] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  useEffect(() => {
+    if (customer && customer.authProvider !== 'guest') {
+      setCustomerName(customer.name || '');
+      setCustomerPhone(customer.phone || '07');
+      if (customer.savedDeliveryTown) setDeliveryTown(customer.savedDeliveryTown);
+      setPaymentMethod(customer.walletBalance >= 1000 ? 'wallet_balance' : 'mpesa_stk');
+    } else {
+      setCustomerName('');
+      setCustomerPhone('07');
+    }
+  }, [customer?.id]);
 
   const summary = calculateCartSummary(cartItems);
 
@@ -104,6 +115,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   };
 
   const handleGenerateWhatsAppMessage = () => {
+    if (!customerName.trim() || customerPhone.replace(/\D/g, '').length < 9) {
+      setCheckoutStep('details');
+      setCheckoutError('Please enter your name and phone number so the admin can reach you.');
+      return;
+    }
+    setCheckoutError(null);
     const lines = [
       `*NEW WHOLESALE ORDER - BLUES COLLECTION KISUMU*`,
       `Customer / Shop: ${customerName || 'Reseller'} (${customerPhone})`,
@@ -952,6 +969,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <span>
                     Send M-Pesa STK (KSh {paymentMethod === 'lipa_pole_pole' ? summary.depositAmount.toLocaleString() : summary.finalTotal.toLocaleString()})
                   </span>
+                </button>
+                <button
+                  onClick={handleGenerateWhatsAppMessage}
+                  className="w-full py-3 px-4 rounded-2xl bg-green-500 hover:bg-green-600 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Order via WhatsApp</span>
                 </button>
                 <div className="grid grid-cols-2 gap-2">
                   <button
